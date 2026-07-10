@@ -1,0 +1,54 @@
+name: Publică aplicația
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Preia sursa
+        uses: actions/checkout@v4
+      - name: Configurează pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.7.0
+      - name: Configurează Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Instalează dependențele
+        run: pnpm install --frozen-lockfile
+      - name: Construiește aplicația
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_BASE_PATH: /pontaj-iphone
+      - name: Configurează GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Încarcă aplicația
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./out
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Publică
+        id: deployment
+        uses: actions/deploy-pages@v4
