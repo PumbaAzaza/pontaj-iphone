@@ -1,0 +1,1 @@
+WH icon assets use new cache-busting filenames.
