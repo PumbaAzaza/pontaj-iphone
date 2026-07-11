@@ -1,8 +1,9 @@
-name: PublicДѓ aplicaИ›ia
+name: Deploy WorkHours to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -11,35 +12,33 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: github-pages
   cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Preia sursa
+      - name: Checkout repository
         uses: actions/checkout@v4
-      - name: ConfigureazДѓ pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11.7.0
-      - name: ConfigureazДѓ Node.js
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: pnpm
-      - name: InstaleazДѓ dependenИ›ele
-        run: pnpm install --frozen-lockfile
-      - name: ConstruieИ™te aplicaИ›ia
-        run: pnpm build
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build static application
+        run: npm run build
         env:
           NEXT_PUBLIC_BASE_PATH: /pontaj-iphone
-      - name: ConfigureazДѓ GitHub Pages
+
+      - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
-      - name: ГЋncarcДѓ aplicaИ›ia
+
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./out
@@ -51,7 +50,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: PublicДѓ
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
