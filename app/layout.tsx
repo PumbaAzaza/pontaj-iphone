@@ -41,10 +41,31 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     }
   `;
 
+  const iPhoneTimeFieldFix = `
+    .sheet .two {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+      gap: 18px !important;
+    }
+    .sheet .two > * {
+      min-width: 0 !important;
+      width: 100% !important;
+    }
+    .sheet .two input[type="time"] {
+      display: block !important;
+      width: 100% !important;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+      -webkit-appearance: none !important;
+      appearance: none !important;
+    }
+  `;
+
   return (
     <html lang="ro">
       <body>
         {children}
+        <style dangerouslySetInnerHTML={{ __html: iPhoneTimeFieldFix }} />
         <script dangerouslySetInnerHTML={{ __html: registerServiceWorker }} />
       </body>
     </html>
