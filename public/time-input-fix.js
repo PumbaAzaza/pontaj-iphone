@@ -2,8 +2,6 @@
   'use strict';
 
   const TIME_FIELDS=new Set(['in1','out1','in2','out2']);
-  let restoreField='';
-  let restorePosition=0;
 
   function formatPartial(value){
     const digits=String(value||'').replace(/\D/g,'').slice(0,4);
@@ -29,22 +27,19 @@
     input.setAttribute('aria-label',`${input.previousElementSibling?.textContent||'Ora'} HH:MM`);
 
     input.oninput=function(){
-      const digits=String(input.value||'').replace(/\D/g,'').slice(0,4);
-      const formatted=formatPartial(digits);
+      const formatted=formatPartial(input.value);
       input.value=formatted;
 
-      // Nu redesena formularul după fiecare cifră; iPhone-ul ar închide tastatura.
-      // Trimite valoarea către aplicație doar după introducerea tuturor celor 4 cifre.
-      if(digits.length===4){
-        restoreField=input.dataset.field;
-        restorePosition=formatted.length;
-        if(typeof appHandler==='function')appHandler.call(input,{target:input});
-      }
+      // Nu trimite încă valoarea aplicației și nu redesena formularul.
+      // Tastatura rămâne deschisă chiar și după toate cele 4 cifre.
     };
 
     input.onblur=function(){
       const value=input.value.trim();
-      if(!value)return;
+      if(!value){
+        if(typeof appHandler==='function')appHandler.call(input,{target:input});
+        return;
+      }
 
       if(!isValidTime(value)){
         alert('Scrie ora în format HH:MM, de exemplu 08:30.');
@@ -52,25 +47,14 @@
         return;
       }
 
-      // Salvează și cazul în care utilizatorul a lipit sau a completat valoarea fără ultimul eveniment input.
+      // Valoarea este transmisă aplicației numai când utilizatorul închide
+      // singur tastatura cu „Gata” sau atinge în afara câmpului.
       if(typeof appHandler==='function')appHandler.call(input,{target:input});
     };
   }
 
   function apply(){
     document.querySelectorAll('input[data-field]').forEach(decorate);
-
-    if(restoreField){
-      const field=restoreField;
-      const position=restorePosition;
-      restoreField='';
-      requestAnimationFrame(()=>{
-        const input=document.querySelector(`input[data-field="${field}"]`);
-        if(!input)return;
-        input.focus();
-        try{input.setSelectionRange(position,position)}catch(_){ }
-      });
-    }
   }
 
   new MutationObserver(apply).observe(document.documentElement,{childList:true,subtree:true});
