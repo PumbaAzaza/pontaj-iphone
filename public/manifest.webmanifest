@@ -2,13 +2,14 @@
   "name": "WorkHours",
   "short_name": "WorkHours",
   "description": "Pontaj lunar simplu, instalabil pe iPhone.",
-  "start_url": "./?v=20260711-3",
+  "start_url": "./?v=20260711-4",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f3f5f7",
   "theme_color": "#126b5a",
   "icons": [
-    {"src":"./wh-home-v3.png?v=20260711-3","sizes":"192x192","type":"image/png","purpose":"any maskable"},
-    {"src":"./wh-home-v3.png?v=20260711-3","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+    {"src":"./apple-touch-icon.png?v=20260711-4","sizes":"180x180","type":"image/png","purpose":"any"},
+    {"src":"./icon-192.png?v=20260711-4","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"./icon-512.png?v=20260711-4","sizes":"512x512","type":"image/png","purpose":"any maskable"}
   ]
 }
