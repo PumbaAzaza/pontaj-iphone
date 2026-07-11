@@ -1,0 +1,9 @@
+/* Ajustări specifice pentru formularul zilnic pe iPhone. */
+.sheet .two {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: 16px;
+}
+
+.sheet .two > * {
+  min-width: 0;
+}
