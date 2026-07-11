@@ -29,19 +29,31 @@
     input.setAttribute('aria-label',`${input.previousElementSibling?.textContent||'Ora'} HH:MM`);
 
     input.oninput=function(){
-      const formatted=formatPartial(input.value);
+      const digits=String(input.value||'').replace(/\D/g,'').slice(0,4);
+      const formatted=formatPartial(digits);
       input.value=formatted;
-      restoreField=input.dataset.field;
-      restorePosition=formatted.length;
-      if(typeof appHandler==='function')appHandler.call(input,{target:input});
+
+      // Nu redesena formularul după fiecare cifră; iPhone-ul ar închide tastatura.
+      // Trimite valoarea către aplicație doar după introducerea tuturor celor 4 cifre.
+      if(digits.length===4){
+        restoreField=input.dataset.field;
+        restorePosition=formatted.length;
+        if(typeof appHandler==='function')appHandler.call(input,{target:input});
+      }
     };
 
     input.onblur=function(){
       const value=input.value.trim();
-      if(value && !isValidTime(value)){
+      if(!value)return;
+
+      if(!isValidTime(value)){
         alert('Scrie ora în format HH:MM, de exemplu 08:30.');
         setTimeout(()=>input.focus(),0);
+        return;
       }
+
+      // Salvează și cazul în care utilizatorul a lipit sau a completat valoarea fără ultimul eveniment input.
+      if(typeof appHandler==='function')appHandler.call(input,{target:input});
     };
   }
 
