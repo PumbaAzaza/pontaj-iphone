@@ -5,13 +5,13 @@ import "./overrides.css";
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 export const metadata: Metadata = {
-  title: "Pontaj",
-  description: "Pontaj lunar simplu, instalabil pe iPhone.",
+  title: "WorkHours",
+  description: "WorkHours — pontaj lunar simplu, instalabil pe iPhone.",
   manifest: `${basePath}/manifest.webmanifest`,
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Pontaj",
+    title: "WorkHours",
   },
   icons: {
     icon: [
@@ -59,6 +59,34 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       -webkit-appearance: none !important;
       appearance: none !important;
     }
+    .app .header .headerText strong {
+      font-size: 0 !important;
+    }
+    .app .header .headerText strong::after {
+      content: "WorkHours";
+      font-size: 20px;
+    }
+  `;
+
+  const enforceAppName = `
+    (function () {
+      var appName = 'WorkHours';
+      function applyName() {
+        document.title = appName;
+        var label = document.querySelector('.headerText strong');
+        if (label && label.textContent !== appName) label.textContent = appName;
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', applyName);
+      } else {
+        applyName();
+      }
+      new MutationObserver(applyName).observe(document.documentElement, {
+        childList: true,
+        subtree: true,
+        characterData: true
+      });
+    })();
   `;
 
   return (
@@ -67,6 +95,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         {children}
         <style dangerouslySetInnerHTML={{ __html: iPhoneTimeFieldFix }} />
         <script dangerouslySetInnerHTML={{ __html: registerServiceWorker }} />
+        <script dangerouslySetInnerHTML={{ __html: enforceAppName }} />
       </body>
     </html>
   );
