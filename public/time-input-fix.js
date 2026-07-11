@@ -3,6 +3,10 @@
 
   const TIME_FIELDS=new Set(['in1','out1','in2','out2']);
 
+  function isTimeInput(element){
+    return element instanceof HTMLInputElement && TIME_FIELDS.has(element.dataset.field);
+  }
+
   function formatPartial(value){
     const digits=String(value||'').replace(/\D/g,'').slice(0,4);
     return digits.length>2?`${digits.slice(0,2)}:${digits.slice(2)}`:digits;
@@ -10,6 +14,21 @@
 
   function isValidTime(value){
     return /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(value);
+  }
+
+  function keepKeyboardOpen(event){
+    const active=document.activeElement;
+    if(!isTimeInput(active)||active.dataset.manualTime!=='1')return;
+
+    const target=event.target;
+    if(target===active)return;
+
+    // Permite trecerea directă la un alt câmp de oră; tastatura rămâne deschisă.
+    if(isTimeInput(target))return;
+
+    // O atingere în pagină nu mai poate elimina focusul din câmp.
+    // Tastatura se închide numai prin butonul „Gata” al iPhone-ului.
+    event.preventDefault();
   }
 
   function decorate(input){
@@ -27,15 +46,13 @@
     input.setAttribute('aria-label',`${input.previousElementSibling?.textContent||'Ora'} HH:MM`);
 
     input.oninput=function(){
-      const formatted=formatPartial(input.value);
-      input.value=formatted;
-
-      // Nu trimite încă valoarea aplicației și nu redesena formularul.
-      // Tastatura rămâne deschisă chiar și după toate cele 4 cifre.
+      input.value=formatPartial(input.value);
+      // Formularul nu este redesenat cât timp utilizatorul scrie.
     };
 
     input.onblur=function(){
       const value=input.value.trim();
+
       if(!value){
         if(typeof appHandler==='function')appHandler.call(input,{target:input});
         return;
@@ -47,8 +64,7 @@
         return;
       }
 
-      // Valoarea este transmisă aplicației numai când utilizatorul închide
-      // singur tastatura cu „Gata” sau atinge în afara câmpului.
+      // Blur-ul rămas este produs de butonul „Gata”; abia acum transmitem valoarea.
       if(typeof appHandler==='function')appHandler.call(input,{target:input});
     };
   }
@@ -57,6 +73,8 @@
     document.querySelectorAll('input[data-field]').forEach(decorate);
   }
 
+  document.addEventListener('touchstart',keepKeyboardOpen,{capture:true,passive:false});
+  document.addEventListener('mousedown',keepKeyboardOpen,true);
   new MutationObserver(apply).observe(document.documentElement,{childList:true,subtree:true});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply);
   else apply();
