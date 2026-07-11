@@ -1,4 +1,4 @@
-const CACHE_NAME = "pontaj-iphone-v1";
+const CACHE_NAME = "pontaj-iphone-v2";
 const APP_ROOT = new URL("./", self.location.href).href;
 const APP_SHELL = [
   APP_ROOT,
@@ -26,18 +26,22 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  event.respondWith(
-    caches.match(request).then((cached) => {
-      if (cached) return cached;
-      return fetch(request)
+  if (request.mode === "navigate") {
+    event.respondWith(
+      fetch(request)
         .then((response) => {
-          if (response.ok) {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-          }
+          if (response.ok) caches.open(CACHE_NAME).then((cache) => cache.put(APP_ROOT, response.clone()));
           return response;
         })
-        .catch(() => caches.match(APP_ROOT));
-    }),
+        .catch(() => caches.match(APP_ROOT)),
+    );
+    return;
+  }
+
+  event.respondWith(
+    caches.match(request).then((cached) => cached || fetch(request).then((response) => {
+      if (response.ok) caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
+      return response;
+    })),
   );
 });
