@@ -1,7 +1,7 @@
 {
-  "name": "Pontaj iPhone",
-  "short_name": "Pontaj",
-  "description": "Calendar de lucru, pontaj lunar și raport PDF.",
+  "name": "WorkHours",
+  "short_name": "WorkHours",
+  "description": "WorkHours — calendar de lucru, pontaj lunar și raport PDF.",
   "lang": "ro",
   "start_url": "./",
   "scope": "./",
