@@ -18,3 +18,13 @@
   -webkit-appearance: none !important;
   appearance: none !important;
 }
+
+/* Numele aplicației este același în toate limbile. */
+.app .header .headerText strong {
+  font-size: 0 !important;
+}
+
+.app .header .headerText strong::after {
+  content: "WorkHours";
+  font-size: 20px;
+}
