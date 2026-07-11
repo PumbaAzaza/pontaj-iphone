@@ -1,4 +1,4 @@
-const CACHE_NAME = "pontaj-iphone-v5";
+const CACHE_NAME = "workhours-v6";
 const APP_ROOT = new URL("./", self.location.href).href;
 const APP_SHELL = [
   APP_ROOT,
