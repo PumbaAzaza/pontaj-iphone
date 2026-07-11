@@ -32,9 +32,20 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const registerServiceWorker = `
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('${basePath}/sw.js', { scope: '${basePath}/' }).catch(function () {});
+      });
+    }
+  `;
+
   return (
     <html lang="ro">
-      <body>{children}</body>
+      <body>
+        {children}
+        <script dangerouslySetInnerHTML={{ __html: registerServiceWorker }} />
+      </body>
     </html>
   );
 }
