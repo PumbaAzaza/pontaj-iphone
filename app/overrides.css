@@ -1,14 +1,20 @@
-/* Ajustări specifice pentru formularul zilnic pe iPhone. */
+/* Corecție pentru inputurile native de oră pe iPhone. */
 .sheet .two {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
   gap: 18px !important;
 }
 
 .sheet .two > * {
-  min-width: 0;
+  min-width: 0 !important;
+  width: 100% !important;
 }
 
-.sheet .two input {
-  width: 100%;
-  min-width: 0;
+.sheet .two input[type="time"] {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
 }
