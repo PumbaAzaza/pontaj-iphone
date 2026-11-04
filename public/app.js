@@ -49,7 +49,7 @@ function bind(){
  const lq=document.getElementById('langQuick');if(lq)lq.onchange=e=>{state.settings.language=e.target.value;save();render()};
  const ls=document.getElementById('langSettings');if(ls)ls.onchange=e=>{state.settings.language=e.target.value;save();render()};
  const emp=document.getElementById('employee');if(emp)emp.oninput=e=>{state.settings.employeeName=e.target.value;save()};
- document.querySelectorAll('[data-field]').forEach(el=>{el.oninput=e=>{const field=e.target.dataset.field;state.draft[field]=e.target.value;};el.onblur=e=>{if(['in1','out1','in2','out2','travelHours'].includes(e.target.dataset.field))render();};});
+ document.querySelectorAll('[data-field]').forEach(el=>{el.oninput=e=>{const field=e.target.dataset.field;state.draft[field]=e.target.value;if(['in1','out1','in2','out2','travelHours'].includes(field)){const totals=document.querySelectorAll('.calc strong');if(totals[0])totals[0].textContent=dur(work(state.draft));if(totals[1])totals[1].textContent=dur(total(state.draft));}};});
  const back=document.getElementById('back');if(back)back.onmousedown=e=>{if(e.target===back)closeSheet()};
  const restore=document.getElementById('restore');if(restore)restore.onchange=importBackup;
 }
