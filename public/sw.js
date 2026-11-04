@@ -1,4 +1,4 @@
-const CACHE_NAME = "workhours-v7";
+const CACHE_NAME = "workhours-v10";
 const APP_ROOT = new URL("./", self.location.href).href;
 const APP_SHELL = [
   APP_ROOT,
@@ -12,7 +12,7 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(CACHE_NAME)
-      .then((cache) => cache.addAll(APP_SHELL.map((url) => `${url}?v=7`)))
+      .then((cache) => cache.addAll(APP_SHELL.map((url) => `${url}?v=10`)))
       .catch(() => undefined),
   );
   self.skipWaiting();
