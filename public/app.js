@@ -62,5 +62,18 @@ async function downloadPdf(share){const t=T[state.settings.language],blob=makePd
 function backup(){download(new Blob([JSON.stringify({entries:state.entries,settings:state.settings},null,2)],{type:'application/json'}),`backup-workhours-${new Date().toISOString().slice(0,10)}.json`)}
 async function importBackup(e){const t=T[state.settings.language],f=e.target.files?.[0];if(!f)return;try{const p=JSON.parse(await f.text());if(!p.entries||!p.settings)throw 0;state.entries=p.entries;state.settings={employeeName:p.settings.employeeName||'',language:p.settings.language==='it'?'it':'ro'};save();toast(t.dataRestored)}catch(_){toast(t.invalidBackup)}}
 load();render();
+// iOS installed web app: explicitly focus native controls on the user's touch.
+// No event cancellation, no custom keyboard, and no layout changes.
+if(window.navigator.standalone===true || window.matchMedia('(display-mode: standalone)').matches){
+  const editable='input:not([type="file"]):not([type="checkbox"]):not([type="radio"]),textarea';
+  document.addEventListener('touchend',function(event){
+    const target=event.target;
+    const field=target?.closest?.(editable);
+    if(!field || field.disabled || field.readOnly)return;
+    if(document.activeElement!==field){
+      try{field.focus({preventScroll:true})}catch(_){field.focus()}
+    }
+  },{capture:true,passive:true});
+}
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 })();
