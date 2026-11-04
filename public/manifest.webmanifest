@@ -2,7 +2,7 @@
   "name": "WorkHours",
   "short_name": "WorkHours",
   "description": "Pontaj lunar simplu, instalabil pe iPhone.",
-  "start_url": "./?v=20261104-10",
+  "start_url": "./?v=20260711-4",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f3f5f7",
